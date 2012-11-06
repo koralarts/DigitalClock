@@ -1,0 +1,12 @@
+# Files
+*.bak
+*.flow.rpt
+*.map.rpt
+*.map.summary
+*.qsf
+*.qws
+
+# Directories
+db/
+incremental_db/
+simulation/
