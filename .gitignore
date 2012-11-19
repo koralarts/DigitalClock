@@ -5,6 +5,8 @@
 *.map.summary
 *.qsf
 *.qws
+.DS_Store
+*~
 
 # Directories
 db/
