@@ -25,7 +25,8 @@ use work.all;
 -- ClockDisplay
 --
 -- Notes:
--- 
+-- Based on the code found in VHDL Guru
+-- http://vhdlguru.blogspot.ca/2010/03/vhdl-code-for-bcd-to-7-segment-display.html
 -----------------
 entity ClockDisplay is
 	port( 
