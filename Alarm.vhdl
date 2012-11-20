@@ -26,7 +26,9 @@ use std.textio.all;
 -- 
 -----------------
 entity Alarm is
-	port( Alarm_alarm_i: in  bit_vector(15 downto 0);
+	port( 
+			Alarm_minute_i: in std_logic;
+			Alarm_alarm_i: in  bit_vector(15 downto 0);
 			Alarm_set_i:	in  integer;
 			Alarm_on_i:		in	 bit;
 			Alarm_buzz_o:	out std_logic

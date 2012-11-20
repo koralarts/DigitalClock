@@ -30,12 +30,12 @@ use work.all;
 -----------------
 entity ClockDisplay is
 	port( 
-	    Clock: in std_logic;
-	    Time: in bit_vector(15 downto 0);
-			NumberDisplay0: out  bit_vector(3 downto 0); --HX:XX
-			NumberDisplay1: out  bit_vector(3 downto 0); --XH:XX
-			NumberDisplay2: out  bit_vector(3 downto 0); --XX:MX
-			NumberDisplay3: out  bit_vector(3 downto 0) --XX:XM
+	    ClockDisplay_minute_i: in std_logic;
+	    ClockDisplay_bcd_i: in bit_vector(15 downto 0);
+			ClockDisplay_NumberDisplay_0_o: out  bit_vector(3 downto 0); --HX:XX
+			ClockDisplay_NumberDisplay_1_o: out  bit_vector(3 downto 0); --XH:XX
+			ClockDisplay_NumberDisplay_2_o: out  bit_vector(3 downto 0); --XX:MX
+			ClockDisplay_NumberDisplay_3_o: out  bit_vector(3 downto 0) --XX:XM
 		  );
 end ClockDisplay;
 
@@ -54,21 +54,21 @@ end Behaviour;
 architecture struct of ClockDisplay is
   component NumberDisplay is
     port(
-      Clock: in std_logic;
-	    Number: in std_logic_vector(3 downto 0); --BCD
-			Segments: out std_logic_vector(6 downto 0)
+      NumberDisplay_minute_i: in std_logic;
+	    NumberDisplay_bcd_i: in std_logic_vector(3 downto 0); --BCD
+			NumberDisplay_segments_o: out std_logic_vector(6 downto 0)
         );
       end component;
       
-      signal Number0: std_logic_vector(3 downto 0); --BCD
-      signal Number1: std_logic_vector(3 downto 0); --BCD
-      signal Number2: std_logic_vector(3 downto 0); --BCD
-      signal Number3: std_logic_vector(3 downto 0); --BCD
+      signal bcd_0: std_logic_vector(3 downto 0); --BCD
+      signal bcd_1: std_logic_vector(3 downto 0); --BCD
+      signal bcd_2: std_logic_vector(3 downto 0); --BCD
+      signal bcd_3: std_logic_vector(3 downto 0); --BCD
       
     begin
-      Display0: NumberDisplay port map( Clock=>Clock, Number=>Number0 );
-      Display1: NumberDisplay port map( Clock=>Clock, Number=>Number1 );
-      Display2: NumberDisplay port map( Clock=>Clock, Number=>Number2 );
-      Display3: NumberDisplay port map( Clock=>Clock, Number=>Number3 );
+      Display0: NumberDisplay port map( NumberDisplay_minute_i => ClockDisplay_minute_i, NumberDisplay_bcd_i => bcd_0 );
+      Display1: NumberDisplay port map( NumberDisplay_minute_i => ClockDisplay_minute_i, NumberDisplay_bcd_i => bcd_1 );
+      Display2: NumberDisplay port map( NumberDisplay_minute_i => ClockDisplay_minute_i, NumberDisplay_bcd_i => bcd_2 );
+      Display3: NumberDisplay port map( NumberDisplay_minute_i => ClockDisplay_minute_i, NumberDisplay_bcd_i => bcd_3 );
     end struct;
 

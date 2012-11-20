@@ -25,7 +25,8 @@ use ieee.numeric_std.all;
 -- 
 -----------------
 entity Controller is
-	port( Controller_minute_i: in  std_logic;
+	port( 
+			Controller_minute_i: in  std_logic;
 			Controller_set_i:		in  std_logic;
 			Controller_bcd_o:		out bit_vector(15 downto 0);
 			Controller_alarm_o:	out bit_vector(15 downto 0)

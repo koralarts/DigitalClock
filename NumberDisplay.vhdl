@@ -28,9 +28,9 @@ use std.textio.all;
 -----------------
 entity NumberDisplay is
 	port( 
-	    Clock: in std_logic;
-	    Number: in std_logic_vector(3 downto 0); --BCD
-			Segments: out std_logic_vector(6 downto 0)
+	    NumberDisplay_minute_i: in std_logic;
+	    NumberDisplay_bcd_i: in std_logic_vector(3 downto 0);
+			NumberDisplay_segments_o: out std_logic_vector(6 downto 0)
 	);
 end NumberDisplay;
 
@@ -43,11 +43,11 @@ end NumberDisplay;
 architecture Behaviour of NumberDisplay is
 
 begin
-  process (Clock, Number)
+  process (NumberDisplay_minute_i, NumberDisplay_bcd_i)
     begin
       -- Every clock cycle
-      if(Clock'event and Clock='1') then
-        case Number is
+      if(NumberDisplay_minute_i'event and NumberDisplay_minute_i='1') then
+        case NumberDisplay_bcd_i is
           when "0000"=> Segments <="0000001";
           when "0001"=> Segments <="1001111";
           when "0010"=> Segments <="0010010";
