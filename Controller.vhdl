@@ -8,6 +8,11 @@
 -- Date: November 5, 2012
 --
 -- Revisions: (Date and Description)
+-- =============================
+-- November 23, 2012
+-- =============================
+-- Combined the process for set and
+-- minute events into the same one.
 --
 -- Notes:
 -------------------------------------
@@ -71,10 +76,11 @@ signal hh: integer range 0 to 24 := 0;
 
 begin
 	-- process minute pulses
-	process(Controller_minute_i)
+	process(Controller_minute_i, Controller_set_i)
 	begin
 		-- check if there's a pulse
-		if(Controller_minute_i'event and Controller_minute_i = '1') then
+		if(Controller_minute_i'event and Controller_minute_i = '1') or
+		   (Controller_set_i'event and Controller_set_i = '1') then
 			mm <= mm + 1;
 			if(mm = 59) then
 				mm <= 0;
@@ -84,29 +90,8 @@ begin
 				end if;
 			end if;
 			
-			-- convert to bit_vector for transfer
-			Controller_bcd_o <= convert(mm, hh);
-			Controller_alarm_o <= convert(mm, hh);
-			
-		end if;
-	end process;
-	
-	-- process set pulses
-	process(Controller_set_i)
-	begin
-		if(Controller_set_i'event and Controller_set_i = '1') then
-			mm <= mm + 1;
-			if(mm = 59) then
-				mm <= 0;
-				hh <= hh + 1;
-				if(hh = 24) then
-					hh <= 0;
-				end if;
-			end if;
-			
-			-- convert to bit_vector for transfer
-			Controller_bcd_o <= convert(mm, hh);
-			Controller_alarm_o <= convert(mm, hh);
+		 Controller_bcd_o <= convert(mm, hh);
+		 Controller_alarm_o <= convert(mm, hh);
 			
 		end if;
 	end process;
