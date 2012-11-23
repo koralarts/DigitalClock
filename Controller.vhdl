@@ -1,5 +1,7 @@
 --------------------------------------
--- DigitalClock.vhdl
+-- Project: DigitalClock
+--
+-- File: Controller.vhdl
 --
 -- Author: Karl Castillo
 --
@@ -32,13 +34,11 @@ entity Controller is
 			Controller_alarm_o:	out bit_vector(15 downto 0)
 		  );
 	
-	-- Functions
-	-----------------
-	-- Convert
-	--
-	-- Notes:
-	-- 
-	-----------------
+	-------------
+	-- convert
+	-- Converts 2 ints to their specific bit_vectors and combines them
+	-- into a bit_vector of size 16.
+	-------------
 	function convert(constant min,hur: in integer) return bit_vector is
 
 	-- Local variables
@@ -111,3 +111,4 @@ begin
 		end if;
 	end process;
 end Behaviour;
+

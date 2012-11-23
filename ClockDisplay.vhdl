@@ -1,5 +1,7 @@
 --------------------------------------
--- DigitalClock.vhdl
+-- Project: DigitalClock
+-- 
+-- File: ClockDisplay.vhdl
 --
 -- Author: James Brennan
 --

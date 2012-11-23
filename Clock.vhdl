@@ -1,5 +1,7 @@
 --------------------------------------
--- Clock.vhdl
+-- Project: DigitalClock 
+--
+-- File: Clock.vhdl
 --
 -- Author: Karl Castillo, James Brennan
 --
