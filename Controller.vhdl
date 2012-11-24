@@ -13,6 +13,15 @@
 -- =============================
 -- Combined the process for set and
 -- minute events into the same one.
+-- =============================
+-- November 24, 2012
+-- =============================
+-- Replaced mm and hh to separate
+-- integer to simplify the BCD
+-- conversion.
+--
+-- Replaced the convert function to
+-- accomodate single integer input.
 --
 -- Notes:
 -------------------------------------
@@ -44,18 +53,20 @@ entity Controller is
 	-- Converts 2 ints to their specific bit_vectors and combines them
 	-- into a bit_vector of size 16.
 	-------------
-	function convert(constant min,hur: in integer) return bit_vector is
+	function convert(constant m1,m2,h1,h2: in integer) return bit_vector is
 
 	-- Local variables
-	variable min_bit: bit_vector(7 downto 0);
-	variable hur_bit: bit_vector(7 downto 0);
+	variable min_bits: bit_vector(7 downto 0);
+	variable hur_bits: bit_vector(7 downto 0);
 	variable ret:		bit_vector(15 downto 0);
 
 	begin
-		min_bit := to_bitvector(std_logic_vector(to_unsigned(min, 8)));
-		hur_bit := to_bitvector(std_logic_vector(to_unsigned(hur, 8)));
-		ret(7 downto 0) := min_bit;
-		ret(15 downto 8) := hur_bit;
+	  min_bits(7 downto 4) := to_bitvector(std_logic_vector(to_unsigned(m2, 4)));
+		min_bits(3 downto 0) := to_bitvector(std_logic_vector(to_unsigned(m1, 4)));
+		hur_bits(7 downto 4) := to_bitvector(std_logic_vector(to_unsigned(h2, 4)));
+		hur_bits(3 downto 0) := to_bitvector(std_logic_vector(to_unsigned(h1, 4)));
+		ret(7 downto 0) := min_bits;
+		ret(15 downto 8) := hur_bits;
 		
 		return ret;
 	end convert;
@@ -71,8 +82,12 @@ end Controller;
 architecture Behaviour of Controller is
 
 -- Local Signals
-signal mm: integer range 0 to 60 := 0;
-signal hh: integer range 0 to 24 := 0;
+-- minutes
+signal m1: integer range 0 to 9 := 0; -- ones
+signal m2: integer range 0 to 6 := 0; -- tens
+-- hours
+signal h1: integer range 0 to 9 := 0; -- ones
+signal h2: integer range 0 to 4 := 0; -- tnes
 
 begin
 	-- process minute pulses
@@ -81,17 +96,26 @@ begin
 		-- check if there's a pulse
 		if(Controller_minute_i'event and Controller_minute_i = '1') or
 		   (Controller_set_i'event and Controller_set_i = '1') then
-			mm <= mm + 1;
-			if(mm = 59) then
-				mm <= 0;
-				hh <= hh + 1;
-				if(hh = 24) then
-					hh <= 0;
-				end if;
-			end if;
+			m1 <= m1 + 1;
+			if m1 = 9 then
+				m2 <= m2 + 1;
+				m1 <= 0;
+				if m2 = 5 and m1 = 9 then
+					h1 <= h1 + 1;
+					m1 <= 0;
+					m2 <= 0;
+					if h1 = 9 then
+					  h1 <= 0;
+					  h2 <= h2 + 1;
+					  if h2 = 2 and h1 = 4 then
+					    h2 <= 0;
+					  end if;
+					end if; -- h1
+				end if; -- m2
+			end if; -- m1
 			
-		 Controller_bcd_o <= convert(mm, hh);
-		 Controller_alarm_o <= convert(mm, hh);
+		 Controller_bcd_o <= convert(m1,m2,h1,h2);
+		 Controller_alarm_o <= convert(m1,m2,h1,h2);
 			
 		end if;
 	end process;

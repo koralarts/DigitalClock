@@ -20,6 +20,20 @@
 -- Created initial Behaviour
 -- Tested Individually
 --
+-- ==============================
+-- November 24, 2012
+-- ==============================
+-- 
+-- Added Alarm_set_m1_i
+-- Added Alarm_set_m2_i
+-- Added Alarm_set_h1_i
+-- Added Alarm_set_h2_i
+-- Removed Alarm_set_min_i
+-- Removed Alarm_set_hur_i
+--
+-- Replaced the convert function to
+-- accomodate single integer input.
+--
 -- Notes:
 -- The Alarm entity that determines
 -- whether or not the current time
@@ -47,8 +61,10 @@ entity Alarm is
 	port(
 	    Alarm_clk_i:     in  std_logic; -- Clock
 			Alarm_time_i:    in  bit_vector(15 downto 0); -- Current time
-			Alarm_set_min_i:	in  integer; -- Set Minute
-			Alarm_set_hur_i: in  integer; -- Set Hour
+			Alarm_set_m1_i:	 in  integer; -- Set Minute ones place
+			Alarm_set_m2_i:  in  integer; -- Set Minute tens place
+			Alarm_set_h1_i:  in  integer; -- Set Hour ones place
+			Alarm_set_h2_i:  in  integer; -- Set Hour tens place
 			Alarm_on_i:		    in	 bit; -- Alarm on or off (1 = on, 0 = off)
 			Alarm_buzz_o:	   out std_logic -- BUZZ! (1 = buzz, 0 = no buzz)
 		  );
@@ -58,18 +74,20 @@ entity Alarm is
 	-- Converts 2 ints to their specific bit_vectors and combines them
 	-- into a bit_vector of size 16.
 	-------------
-  function convert(constant min,hur: in integer) return bit_vector is
+	function convert(constant m1,m2,h1,h2: in integer) return bit_vector is
 
 	-- Local variables
-	variable min_bit: bit_vector(7 downto 0);
-	variable hur_bit: bit_vector(7 downto 0);
+	variable min_bits: bit_vector(7 downto 0);
+	variable hur_bits: bit_vector(7 downto 0);
 	variable ret:		bit_vector(15 downto 0);
 
 	begin
-		min_bit := to_bitvector(std_logic_vector(to_unsigned(min, 8)));
-		hur_bit := to_bitvector(std_logic_vector(to_unsigned(hur, 8)));
-		ret(7 downto 0) := min_bit;
-		ret(15 downto 8) := hur_bit;
+	  min_bits(7 downto 4) := to_bitvector(std_logic_vector(to_unsigned(m2, 4)));
+		min_bits(3 downto 0) := to_bitvector(std_logic_vector(to_unsigned(m1, 4)));
+		hur_bits(7 downto 4) := to_bitvector(std_logic_vector(to_unsigned(h2, 4)));
+		hur_bits(3 downto 0) := to_bitvector(std_logic_vector(to_unsigned(h1, 4)));
+		ret(7 downto 0) := min_bits;
+		ret(15 downto 8) := hur_bits;
 		
 		return ret;
 	end convert;
@@ -89,7 +107,8 @@ begin
   process(Alarm_clk_i)
   begin
     if Alarm_clk_i'event and Alarm_clk_i = '1' and Alarm_on_i = '1' then -- Check if new time, and alarm is on
-      bit_alarm <= convert(Alarm_set_min_i, Alarm_set_hur_i); -- Convert to bit vectors
+      bit_alarm <= convert(Alarm_set_m1_i, Alarm_set_m1_i,
+                            Alarm_set_h1_i, Alarm_set_h2_i); -- Convert to bit vectors
       if bit_alarm = Alarm_time_i then -- Compare if current time equals alarm time
         Alarm_buzz_o <= '1'; -- BUZZ!
       else
