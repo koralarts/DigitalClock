@@ -6,6 +6,17 @@
 *.qsf
 *.qws
 .DS_Store
+*.asm.rpt
+*.done
+*.eda.rpt
+*.fit.rpt
+*.fit.summary
+*.jdi
+*.pin
+*.sof
+*.sta.rpt
+*.sta.summary
+*.rpt
 *~
 
 # Directories

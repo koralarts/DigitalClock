@@ -8,6 +8,12 @@
 -- Date: November 5, 2012
 --
 -- Revisions: (Date and Description)
+-- =============================
+-- November 26, 2012
+-- =============================
+-- 
+-- Added Clock_clk_o
+-- Removed Clock_pulse_o
 --
 -- Notes:
 -------------------------------------
@@ -26,8 +32,8 @@ use ieee.std_logic_unsigned.all;
 -- (http://vhdlguru.blogspot.ca/2010/03/digital-clock-in-vhdl.html)
 -----------------
 entity Clock is
-	port( Clock_clk_i:	in  std_logic;
-			Clock_pulse_o:	out std_logic
+	port( Clock_clk_i: in  std_logic;
+			Clock_clk_o: out std_logic
 		  );
 end Clock;
 
@@ -67,9 +73,9 @@ begin
 		sec <= sec + 1;
 		if(sec = 59) then
 			sec <= 0;
-			Clock_pulse_o <= '1';
+			Clock_clk_o <= '1';
 		else
-			Clock_pulse_o <= '0';
+			Clock_clk_o <= '0';
 		end if;
 	end if;
 end process;

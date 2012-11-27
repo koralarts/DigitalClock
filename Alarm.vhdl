@@ -58,15 +58,14 @@ use std.textio.all;
 -- Alarm
 -----------------
 entity Alarm is
-	port(
-	    Alarm_clk_i:     in  std_logic; -- Clock
+	port( Alarm_clk_i:     in  std_logic; -- Clock
 			Alarm_time_i:    in  bit_vector(15 downto 0); -- Current time
-			Alarm_set_m1_i:	 in  integer; -- Set Minute ones place
+			Alarm_set_m1_i:  in  integer; -- Set Minute ones place
 			Alarm_set_m2_i:  in  integer; -- Set Minute tens place
 			Alarm_set_h1_i:  in  integer; -- Set Hour ones place
 			Alarm_set_h2_i:  in  integer; -- Set Hour tens place
-			Alarm_on_i:		    in	 bit; -- Alarm on or off (1 = on, 0 = off)
-			Alarm_buzz_o:	   out std_logic -- BUZZ! (1 = buzz, 0 = no buzz)
+			Alarm_on_i:		  in	std_logic; -- Alarm on or off (1 = on, 0 = off)
+			Alarm_buzz_o:	  out std_logic -- BUZZ! (1 = buzz, 0 = no buzz)
 		  );
 	
 	-------------

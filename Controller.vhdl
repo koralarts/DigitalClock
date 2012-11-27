@@ -22,6 +22,21 @@
 --
 -- Replaced the convert function to
 -- accomodate single integer input.
+-- =============================
+-- November 26, 2012
+-- =============================
+--
+-- Added Controller_clk_i
+-- Added Controller_time_o
+-- Removed Controller_pulse_i
+-- Removed Controller_alarm_o
+-- Removed Controller_bcd_o
+-- Removed convert function
+--
+-- Simplified the output (time) and
+-- combined it into one signal.
+-- Both the Alarm and BCD will take
+-- in Controller_time_o as intput.
 --
 -- Notes:
 -------------------------------------
@@ -41,36 +56,10 @@ use ieee.numeric_std.all;
 -- 
 -----------------
 entity Controller is
-	port( 
-			Controller_minute_i: in  std_logic;
-			Controller_set_i:		in  std_logic;
-			Controller_bcd_o:		out bit_vector(15 downto 0);
-			Controller_alarm_o:	out bit_vector(15 downto 0)
+	port( Controller_clk_i:  in  std_logic;
+			Controller_set_i:	 in  std_logic;
+			Controller_time_o: out bit_vector(15 downto 0)
 		  );
-	
-	-------------
-	-- convert
-	-- Converts 2 ints to their specific bit_vectors and combines them
-	-- into a bit_vector of size 16.
-	-------------
-	function convert(constant m1,m2,h1,h2: in integer) return bit_vector is
-
-	-- Local variables
-	variable min_bits: bit_vector(7 downto 0);
-	variable hur_bits: bit_vector(7 downto 0);
-	variable ret:		bit_vector(15 downto 0);
-
-	begin
-	  min_bits(7 downto 4) := to_bitvector(std_logic_vector(to_unsigned(m2, 4)));
-		min_bits(3 downto 0) := to_bitvector(std_logic_vector(to_unsigned(m1, 4)));
-		hur_bits(7 downto 4) := to_bitvector(std_logic_vector(to_unsigned(h2, 4)));
-		hur_bits(3 downto 0) := to_bitvector(std_logic_vector(to_unsigned(h1, 4)));
-		ret(7 downto 0) := min_bits;
-		ret(15 downto 8) := hur_bits;
-		
-		return ret;
-	end convert;
-	
 end Controller;
 
 -----------------
@@ -91,11 +80,10 @@ signal h2: integer range 0 to 4 := 0; -- tnes
 
 begin
 	-- process minute pulses
-	process(Controller_minute_i, Controller_set_i)
+	process(Controller_clk_i, Controller_set_i)
 	begin
 		-- check if there's a pulse
-		if(Controller_minute_i'event and Controller_minute_i = '1') or
-		   (Controller_set_i'event and Controller_set_i = '1') then
+		if Controller_clk_i = '1' or Controller_set_i = '1' then
 			m1 <= m1 + 1;
 			if m1 = 9 then
 				m2 <= m2 + 1;
@@ -108,16 +96,16 @@ begin
 					  h1 <= 0;
 					  h2 <= h2 + 1;
 					  if h2 = 2 and h1 = 4 then
-					    h2 <= 0;
+						 h2 <= 0;
 					  end if;
 					end if; -- h1
 				end if; -- m2
 			end if; -- m1
-			
-		 Controller_bcd_o <= convert(m1,m2,h1,h2);
-		 Controller_alarm_o <= convert(m1,m2,h1,h2);
-			
-		end if;
+	 
+		 Controller_time_o(3 downto 0) <= to_bitvector(std_logic_vector(to_unsigned(m1, 4)));
+		 Controller_time_o(7 downto 4) <= to_bitvector(std_logic_vector(to_unsigned(m2, 4)));
+		 Controller_time_o(11 downto 8) <= to_bitvector(std_logic_vector(to_unsigned(h1, 4)));
+		 Controller_time_o(15 downto 12)<= to_bitvector(std_logic_vector(to_unsigned(h2, 4)));
+		end if; 
 	end process;
 end Behaviour;
-
