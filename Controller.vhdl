@@ -76,7 +76,7 @@ signal m1: integer range 0 to 9 := 0; -- ones
 signal m2: integer range 0 to 6 := 0; -- tens
 -- hours
 signal h1: integer range 0 to 9 := 0; -- ones
-signal h2: integer range 0 to 4 := 0; -- tnes
+signal h2: integer range 0 to 2 := 0; -- tnes
 
 begin
 	-- process minute pulses
