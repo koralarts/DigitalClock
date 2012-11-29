@@ -33,7 +33,7 @@ use ieee.std_logic_unsigned.all;
 -----------------
 entity Clock is
 	port( Clock_clk_i: in  std_logic;
-			Clock_clk_o: out std_logic
+			Clock_clk_o: out std_logic := '1'
 		  );
 end Clock;
 
@@ -59,7 +59,7 @@ process(Clock_clk_i)
 begin
 	if(Clock_clk_i'event and Clock_clk_i = '1') then
 		count <= count + 1;
-		if(count = 50000000) then
+		if(count = 1) then -- 50000000 for release 1 for testing
 			clk <= not clk;
 			count <= 1;
 		end if;

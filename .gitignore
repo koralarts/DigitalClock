@@ -17,6 +17,9 @@
 *.sta.rpt
 *.sta.summary
 *.rpt
+*.bsf
+*.inc
+*.ddb
 *~
 
 # Directories

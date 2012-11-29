@@ -58,8 +58,7 @@ use std.textio.all;
 -- Alarm
 -----------------
 entity Alarm is
-	port( Alarm_clk_i:     in  std_logic; -- Clock
-			Alarm_time_i:    in  bit_vector(15 downto 0); -- Current time
+	port( Alarm_time_i:    in  bit_vector(15 downto 0); -- Current time
 			Alarm_set_m1_i:  in  integer; -- Set Minute ones place
 			Alarm_set_m2_i:  in  integer; -- Set Minute tens place
 			Alarm_set_h1_i:  in  integer; -- Set Hour ones place
@@ -103,9 +102,9 @@ architecture Behaviour of Alarm is
   signal bit_alarm: bit_vector(15 downto 0);
 begin
   -- Compare Set Alarm time and Current time
-  process(Alarm_clk_i)
+  process(Alarm_time_i)
   begin
-    if Alarm_clk_i'event and Alarm_clk_i = '1' and Alarm_on_i = '1' then -- Check if new time, and alarm is on
+    if Alarm_on_i = '1' then -- Check if alarm is on
       bit_alarm <= convert(Alarm_set_m1_i, Alarm_set_m1_i,
                             Alarm_set_h1_i, Alarm_set_h2_i); -- Convert to bit vectors
       if bit_alarm = Alarm_time_i then -- Compare if current time equals alarm time
