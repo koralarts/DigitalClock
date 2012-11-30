@@ -86,7 +86,7 @@ begin
 		if Controller_clk_i = '1' or Controller_set_i = '1' then
 			m1 <= m1 + 1;
 			Controller_time_o(3 downto 0) <= to_bitvector(std_logic_vector(to_unsigned(m1, 4)));
-			if m1 = 9 then
+			if m1 = 10 then
 				m2 <= m2 + 1;
 				m1 <= 0;
 				Controller_time_o(7 downto 4) <= to_bitvector(std_logic_vector(to_unsigned(m2, 4)));
