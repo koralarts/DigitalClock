@@ -76,7 +76,7 @@ signal m1: integer range 0 to 10 := 0; -- ones
 signal m2: integer range 0 to 6 := 0; -- tens
 -- hours
 signal h1: integer range 0 to 10 := 0; -- ones
-signal h2: integer range 0 to 2 := 0; -- tnes
+signal h2: integer range 0 to 3 := 0; -- tnes
 
 begin
 	-- process minute pulses
@@ -84,9 +84,9 @@ begin
 	begin
 		-- check if there's a pulse
 		if Controller_clk_i = '1' or Controller_set_i = '1' then
-			m1 <= m1 + 1;
+		    m1 <= m1 + 1;
 			Controller_time_o(3 downto 0) <= to_bitvector(std_logic_vector(to_unsigned(m1, 4)));
-			if m1 = 10 then
+			if m1 = 9 then
 				m2 <= m2 + 1;
 				m1 <= 0;
 				Controller_time_o(7 downto 4) <= to_bitvector(std_logic_vector(to_unsigned(m2, 4)));
@@ -99,10 +99,12 @@ begin
 					  h2 <= h2 + 1;
 					  h1 <= 0;
 					  Controller_time_o(15 downto 12)<= to_bitvector(std_logic_vector(to_unsigned(h2, 4)));
-					  if h2 = 2 and h1 = 4 then
-						 h2 <= 0;
-					  end if;
+					  
 					end if; -- h1
+					if h2 = 2 and h1 = 4 then
+						 h2 <= 0;
+						 h1 <= 0;
+					  end if;
 				end if; -- m2
 			end if; -- m1
 		end if; 

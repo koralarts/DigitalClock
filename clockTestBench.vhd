@@ -51,7 +51,7 @@ for I in 0 to 119 loop
   clkIn <= '0';
   wait for 1 ns;
 end loop;
-assert (clkOut = '1') report "Failure in clock test, timing issue t01.";
+assert (clkOut = '1') report "Failure in clock test, timing issue t01. Check clock speed and test bench check frequency";
 wait for 4 ns;
 
 -- t02 second iteration
@@ -61,7 +61,7 @@ for I in 0 to 119 loop
   clkIn <= '0';
   wait for 1 ns;
 end loop;
-assert (clkOut = '1') report "Failure in clock test, timing issue t01.";
+assert (clkOut = '1') report "Failure in clock test, timing issue t02. Most likely due to falling out of sync";
 wait for 4 ns;
 
 report "Testing Complete";
