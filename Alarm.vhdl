@@ -58,61 +58,64 @@ use std.textio.all;
 -- Alarm
 -----------------
 entity Alarm is
-	port( Alarm_time_i:    in  bit_vector(15 downto 0); -- Current time
-			Alarm_set_m1_i:  in  integer; -- Set Minute ones place
-			Alarm_set_m2_i:  in  integer; -- Set Minute tens place
-			Alarm_set_h1_i:  in  integer; -- Set Hour ones place
-			Alarm_set_h2_i:  in  integer; -- Set Hour tens place
-			Alarm_on_i:		  in	std_logic; -- Alarm on or off (1 = on, 0 = off)
-			Alarm_buzz_o:	  out std_logic -- BUZZ! (1 = buzz, 0 = no buzz)
-		  );
-	
-	-------------
-	-- convert
-	-- Converts 2 ints to their specific bit_vectors and combines them
-	-- into a bit_vector of size 16.
-	-------------
-	function convert(constant m1,m2,h1,h2: in integer) return bit_vector is
+port( Alarm_time_i: in bit_vector(15 downto 0); -- Current time
+Alarm_set_m1_i: in integer; -- Set Minute ones place
+Alarm_set_m2_i: in integer; -- Set Minute tens place
+Alarm_set_h1_i: in integer; -- Set Hour ones place
+Alarm_set_h2_i: in integer; -- Set Hour tens place
+Alarm_on_i:	in	std_logic; -- Alarm on or off (1 = on, 0 = off)
+Alarm_buzz_o:	out std_logic -- BUZZ! (1 = buzz, 0 = no buzz)
+);
 
-	-- Local variables
-	variable min_bits: bit_vector(7 downto 0);
-	variable hur_bits: bit_vector(7 downto 0);
-	variable ret:		bit_vector(15 downto 0);
+-------------
+-- convert
+-- Converts 2 ints to their specific bit_vectors and combines them
+-- into a bit_vector of size 16.
+-------------
+function convert(constant m1,m2,h1,h2: in integer) return bit_vector is
 
-	begin
-	  min_bits(7 downto 4) := to_bitvector(std_logic_vector(to_unsigned(m2, 4)));
-		min_bits(3 downto 0) := to_bitvector(std_logic_vector(to_unsigned(m1, 4)));
-		hur_bits(7 downto 4) := to_bitvector(std_logic_vector(to_unsigned(h2, 4)));
-		hur_bits(3 downto 0) := to_bitvector(std_logic_vector(to_unsigned(h1, 4)));
-		ret(7 downto 0) := min_bits;
-		ret(15 downto 8) := hur_bits;
-		
-		return ret;
-	end convert;
+-- Local variables
+variable min_bits: bit_vector(7 downto 0);
+variable hur_bits: bit_vector(7 downto 0);
+variable ret:	bit_vector(15 downto 0);
+
+begin
+min_bits(7 downto 4) := to_bitvector(std_logic_vector(to_unsigned(m2, 4)));
+min_bits(3 downto 0) := to_bitvector(std_logic_vector(to_unsigned(m1, 4)));
+hur_bits(7 downto 4) := to_bitvector(std_logic_vector(to_unsigned(h2, 4)));
+hur_bits(3 downto 0) := to_bitvector(std_logic_vector(to_unsigned(h1, 4)));
+ret(7 downto 0) := min_bits;
+ret(15 downto 8) := hur_bits;
+
+return ret;
+end convert;
 end Alarm;
 
 -----------------
 -- Behaviour
 --
 -- Notes:
--- Compares the current time, and set alarm time when Alarm_clk_i and Alarm_on_i 
+-- Compares the current time, and set alarm time when Alarm_clk_i and Alarm_on_i
 -- are both '1'
 -----------------
 architecture Behaviour of Alarm is
   signal bit_alarm: bit_vector(15 downto 0);
 begin
   -- Compare Set Alarm time and Current time
-  process(Alarm_time_i)
+  process(Alarm_time_i, Alarm_on_i)
   begin
     if Alarm_on_i = '1' then -- Check if alarm is on
-      bit_alarm <= convert(Alarm_set_m1_i, Alarm_set_m1_i,
+      bit_alarm <= convert(Alarm_set_m1_i, Alarm_set_m2_i,
                             Alarm_set_h1_i, Alarm_set_h2_i); -- Convert to bit vectors
       if bit_alarm = Alarm_time_i then -- Compare if current time equals alarm time
         Alarm_buzz_o <= '1'; -- BUZZ!
       else
         Alarm_buzz_o <= '0'; -- NO BUZZ!
       end if;
+    else
+      Alarm_buzz_o <= '0'; -- no buzz if alarm is turned off.
     end if;
   end process;
 end Behaviour;
+
 
