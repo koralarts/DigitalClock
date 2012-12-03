@@ -55,94 +55,41 @@ tb : PROCESS
 BEGIN
 
 report "Alarm test:";
--- t01 all zeroes silent
-buzz <= '0'; -- set initial state or else undefined.
-currTime <= "0000000000000001"; -- must have a different initial time then the time to be tested 
+-- t01 alarm at minute four
 wait for 1 ns;
 currTime <= "0000000000000000";
-min1 <= 0;
+min1 <= 4;
 min2 <= 0;
 hr1 <= 0;
 hr2 <= 0;
+almOn <= '1';
+wait for 1 ns;
+currTime <="0000000000000001";
+wait for 1 ns;
+currTime <="0000000000000010";
+wait for 1 ns;
+currTime <="0000000000000011";
+wait for 1 ns;
+currTime <="0000000000000100";
+wait for 1 ns;
+assert(buzz = '1') report "Alarm faild to buzz";
+wait for 1 ns;
 almOn <= '0';
 wait for 1 ns;
-assert (buzz = '0') report "Failure in alarm test t01.";
+assert(buzz = '0') report "Alarm did not silence properly";
 wait for 1 ns;
-
---t02 buzz on match
-currTime <= "0000000000000000";
-min1 <= 0;
-min2 <= 0;
-hr1 <= 0;
-hr2 <= 0;
-almOn <= '1';
-wait for 4 ns;
-assert (buzz = '1') report "Failure in alarm test t02.";
-wait for 1 ns;
-
---t03 kill buzz
-currTime <= "0000000000000000";
-min1 <= 0;
-min2 <= 0;
-hr1 <= 0;
-hr2 <= 0;
-almOn <= '0';
-wait for 1 ns;
-assert (buzz = '0') report "Failure in alarm test t03.";
-wait for 1 ns;
-
---t04 different values in each spot no alarm
-currTime <= "0000000000000001";
-min1 <= 1;
-min2 <= 2;
-hr1 <= 3;
-hr2 <= 4;
-almOn <= '1';
-wait for 1 ns;
-assert (buzz = '0') report "Failure in alarm test t04.";
-wait for 1 ns;
-
---t05 match one min buzz
-currTime <= "0000000000000001";
-min1 <= 1;
-min2 <= 0;
-hr1 <= 0;
-hr2 <= 0;
-almOn <= '1';
-wait for 1 ns;
-assert (buzz = '1') report "Failure in alarm test t05.";
-wait for 1 ns;
---t06
-currTime <= "0001000000000000";
-min1 <= 0;
-min2 <= 0;
-hr1 <= 0;
+min1 <= 2;
+min2 <= 3;
+hr1 <= 4;
 hr2 <= 1;
 almOn <= '1';
 wait for 1 ns;
-assert (buzz = '1') report "Failure in alarm test t06.";
+currTime <="0001010000110000";
 wait for 1 ns;
---t07 
-currTime <= "1000010000010010";
-min1 <= 2;
-min2 <= 1;
-hr1 <= 4;
-hr2 <= 8;
-almOn <= '1';
+currTime <="0001010000110001";
 wait for 1 ns;
-assert (buzz = '1') report "Failure in alarm test t07.";
+currTime <="0001010000110010";
 wait for 1 ns;
---t08 kill buzz
-currTime <= "0000010000100000";
-min1 <= 0;
-min2 <= 2;
-hr1 <= 4;
-hr2 <= 0;
-almOn <= '0';
-wait for 1 ns;
-assert (buzz = '0') report "Failure in alarm test t08.";
-wait for 1 ns;
-report "Alarm test Complete";
-wait;
+assert(buzz = '1') report "Alarm did not sound.";
 END PROCESS;
 end behv;

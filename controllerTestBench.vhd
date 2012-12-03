@@ -48,13 +48,41 @@ BEGIN
 
 report "Controller test:";
 -- t01 count out a few minutes
-for I in 0 to 7 loop
-  set <= '0';
-  wait for 4 ns;
-  set <='1'; 
+for I in 0 to 10 loop
+  clk <= '0';
+  wait for 1 ns;
+  clk <='1'; 
   wait for 1 ns;
 end loop;
-assert (currTime = "0000000000000000") report "Failure in controller initial state test t01.";
+assert (currTime = "0000000000010000") report "Failure in controller initial state test t01.";
+
+-- t02 count out a few minutes
+for I in 11 to 60 loop
+  clk <= '0';
+  wait for 1 ns;
+  clk <='1'; 
+  wait for 1 ns;
+end loop;
+assert (currTime = "0000000100000000") report "Failure in controller initial state test t02.";
+
+-- t03 count out a few minutes
+for I in 61 to 600 loop
+  clk <= '0';
+  wait for 1 ns;
+  clk <='1'; 
+  wait for 1 ns;
+end loop;
+assert (currTime = "0001000000000000") report "Failure in controller initial state test t03.";
+
+-- t04 count out a few minutes
+for I in 601 to 3000 loop
+  clk <= '0';
+  wait for 1 ns;
+  clk <='1'; 
+  wait for 1 ns;
+end loop;
+assert (currTime = "0000000000000000") report "Failure in controller initial state test t04.";
+
 
 END PROCESS;
 end behv;
